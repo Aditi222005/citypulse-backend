@@ -19,7 +19,7 @@ const app = express();
 // *** THIS IS THE FIX ***
 // Configure CORS to only allow requests from your deployed frontend
 app.use(cors({
-    origin: 'https://sih-citypulse-vwjy.vercel.app/', // Correct frontend URL
+    origin: 'https://sih-citypulse-vwjy.vercel.app', // Correct frontend URL
     credentials: true
 }));
 
