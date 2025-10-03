@@ -9,9 +9,9 @@ const issueRoutes = require("./routes/issues");
 connectDB();
 const app = express();
 
+// Allowed frontend origins
 const allowedOrigins = [
   "https://sih-citypulse-vwjy.vercel.app",
-  /\.vercel\.app$/,            // ✅ allow all Vercel preview deployments
   "http://localhost:5173",
   "http://localhost:3000"
 ];
@@ -20,15 +20,17 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman/curl
+      if (!origin) return callback(null, true); // allow Postman/cURL etc.
+      
+      // ✅ Exact match OR regex check for any *.vercel.app domain
       if (
         allowedOrigins.includes(origin) ||
         /\.vercel\.app$/.test(origin)
       ) {
         return callback(null, true);
       }
-      // ❌ Old: callback(new Error("CORS not allowed for this origin"));
-      // ✅ New: just deny, don’t crash
+
+      // ❌ Don't throw error → just deny
       return callback(null, false);
     },
     credentials: true,
@@ -37,8 +39,14 @@ app.use(
   })
 );
 
-// ✅ Preflight support
-app.options("*", cors());
+// ✅ Always respond to preflight without hitting auth
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  return res.sendStatus(200);
+});
 
 // ✅ Body parsers
 app.use(express.json());
