@@ -20,14 +20,16 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow tools like curl/postman
+      if (!origin) return callback(null, true); // allow Postman/curl
       if (
-        allowedOrigins.includes(origin) ||     // exact match
-        /\.vercel\.app$/.test(origin)          // regex match for all vercel previews
+        allowedOrigins.includes(origin) ||
+        /\.vercel\.app$/.test(origin)
       ) {
         return callback(null, true);
       }
-      return callback(new Error("CORS not allowed for this origin"));
+      // ❌ Old: callback(new Error("CORS not allowed for this origin"));
+      // ✅ New: just deny, don’t crash
+      return callback(null, false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
