@@ -14,20 +14,25 @@ connectDB();
 
 const app = express();
 
-// Middleware
-// --- THIS IS THE IMPORTANT CHANGE ---
-// It tells your backend to only accept requests from your deployed frontend.
+// --- Middleware ---
+
+// *** THIS IS THE FIX ***
+// Configure CORS to only allow requests from your deployed frontend
 app.use(cors({
-    origin: 'https://citypulse-backend-git-main-aditisjoshi2005-gmailcoms-projects.vercel.app/', // <-- VERY IMPORTANT: Replace this with your actual frontend URL!
+    origin: 'https://sih-citypulse-vwjy.vercel.app/', // Correct frontend URL
     credentials: true
 }));
 
+// Parsers for JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// API Routes
+
+// --- API Routes ---
 app.use('/api/auth', authRoutes);
 app.use('/api/issues', issueRoutes);
 
+
 // Export the app for Vercel's serverless environment
 module.exports = app;
+
