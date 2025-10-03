@@ -15,7 +15,13 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+// --- THIS IS THE IMPORTANT CHANGE ---
+// It tells your backend to only accept requests from your deployed frontend.
+app.use(cors({
+    origin: 'https://citypulse-backend-git-main-aditisjoshi2005-gmailcoms-projects.vercel.app/', // <-- VERY IMPORTANT: Replace this with your actual frontend URL!
+    credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
